@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="/student/assets/images/favicon.png" type="image/png">
+
+  <title>TestRocket | Login</title>
+
+  <link href="student/assets/css/style.default.css" rel="stylesheet">
+  <link href="student/assets/css/custom.css" rel="stylesheet">
+
+    <!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
+    typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);
+    b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
+    mixpanel.init("6397edeccae8afcf331f7ae9ef1fc0fd", { track_pageview: false });</script><!-- end Mixpanel -->
+
+    <script type="text/javascript">
+        mixpanel.track("Login Page Loaded")
+    </script>
+    
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="js/libs/html5shiv.js"></script>
+  <script src="js/libs/respond.min.js"></script>
+  <![endif]-->
+    <style>
+        .has-error .form-control {
+            border-color: #a94442 !important;
+        }
+    </style>
+</head>
+
+<body class="signin">
+
+
+<section>
+  
+    <div class="signinpanel">
+        
+        <div class="row">
+            
+            <div class="col-md-6">
+
+                <div class="signup-info">
+                    <div class="logopanel">
+                        <img src="/student/assets/images/logo.png" style="width:300px" />
+                    </div><!-- logopanel -->
+
+                    <div class="mb10"></div>
+
+                    <h3><strong>Exam Preparation Simplified.</strong></h3>
+
+                    <div class="mb20"></div>
+
+                    <div class="feat-list">
+                        <img src="/student/assets/images/mentoring-feature.png" />
+                        <h4 class="text-success">Mentoring &amp; Speed Tips</h4>
+                        <p></p>
+                    </div>
+
+                    <div class="feat-list">
+                        <img src="/student/assets/images/analytics-feature.png" />
+                        <h4 class="text-success">Strategize Your Prepration</h4>
+                        <p></p>
+                    </div>
+
+                    <div class="feat-list">
+                        <img src="/student/assets/images/content-feature.png" />
+                        <h4 class="text-success">Best In Class Content</h4>
+                        <p></p>
+                    </div>
+
+                    <div class="feat-list">
+                        <img src="/student/assets/images/customize-feature.png" />
+                        <h4 class="text-success">Personalized Preparation</h4>
+                        <p></p>
+                    </div>
+
+                </div><!-- signup-info -->
+
+            </div>
+            
+            <div class="col-md-6">
+                
+                <form method="post" action="/student_signin">
+                    <h4 class="nomargin">Sign In</h4>
+                    <p class="mt5 mb20">Login to access your account.</p>
+                    <p class="mt5 mb20">Not a member? <a href="/student_signup"><strong>Sign Up</strong></a></p>
+                    <div class="form-group">
+                        {% if error %}
+                        <label for="name" class="error">Email/Password are incorrect.</label>
+                        {% endif %}
+                        {% if reset %}
+                        <label for="name" class="text-success">Password has been reset.</label>
+                        {% endif %}
+                        <input type="email" class="form-control email" placeholder="email" name="email" {% if email %} value="{{email}}" {% endif %}/>
+                        <input type="password" class="form-control pword" placeholder="Password" name="password" {% if password %} value="{{password}}" {% endif %}/>
+                        <input type="hidden" name="host" id="host" value="" />
+                        <a href="/student_forgot_password"><small>Forgot Your Password?</small></a>
+                        <button class="btn btn-success btn-block" id="login-btn">Sign In</button>
+                    </div>
+                    
+                </form>
+            </div><!-- col-sm-5 -->
+            
+        </div><!-- row -->
+        
+    </div><!-- signin -->
+  
+</section>
+
+
+<script src="student/js/libs/jquery-1.10.2.min.js"></script>
+<script src="student/js/libs/jquery-migrate-1.2.1.min.js"></script>
+<script src="student/js/libs/bootstrap.min.js"></script>
+<script src="student/js/libs/modernizr.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+    $('#host').val(location.origin);
+    });
+</script>
+</body>
+</html>

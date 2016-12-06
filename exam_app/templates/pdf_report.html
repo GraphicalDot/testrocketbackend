@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Test Report</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{url_for('static', filename='bootstrap-override.css')}}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding-top: 70px;
+            /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+            background-color: #E1E5EA;
+        }
+        .col-md-12 {
+            width: 105% !important;
+        }
+        .circle strong {
+            position: relative;
+            top: -56px;
+            left: -90px;
+            width: 100%;
+            text-align: center;
+            line-height: 40px;
+            font-size: 18px;
+            font-weight: 400;
+        }
+        .quadrant {
+            position: relative;
+            display: inline-block;
+            padding:0px;
+            height: 50%;
+        }
+
+        .quadrant p {
+            margin: 0px;
+        }
+
+        .left-border-box {
+            position:absolute;
+            border-left: 1px solid black;
+            height: 100%
+        }
+        .right-border-box {
+            position:absolute;
+            border-right: 1px solid black;
+            height: 100%
+        }
+        .red-border-box {
+            position:absolute;
+            border-left: 1px solid red;
+            height: 100%
+        }
+        #marks-container {
+            width: 48%;
+        }
+        #subject-attempt-bar {
+            height: 21px;
+            margin-bottom: -20px;
+        }
+        #scale {
+            position:relative;
+            height:40px;
+            background-color:white;
+        }
+        #scale-top {
+            position:relative;
+            width:100%;
+            height: 50%;
+        }
+        #scale-bottom {
+            position:relative;
+            width:100%;
+            height: 50%;
+            border-top: 1px solid black;
+        }
+        #scale-legend {
+            margin-top:20px;
+        }
+        #scale-legend label {
+            margin-right:10px;
+        }
+        #cartessian-plane {
+            height:1000px;
+            background-color:white;
+            margin-left: 18px;
+            margin-bottom: 0px;
+        }
+        .quadrant-label {
+            position:absolute;
+            width: 100px;
+            display: inline-block;
+        }
+        .correct-legend-background {
+            position: absolute;
+            background-color: green;
+            height: 12px;
+            width: 16px;
+            left: -14px;
+        }
+        .incorrect-legend-background {
+            position: absolute;
+            background-color: red;
+            height: 12px;
+            width: 16px;
+            left: -14px;
+        }
+        .not-attempted-legend-background {
+            position: absolute;
+            background-color: gray;
+            height: 12px;
+            width: 16px;
+            left: -14px;
+        }
+        .sub-legend {
+            position: absolute;
+            left: 9px;
+        }
+        .scale-legend {
+	    margin-right: 5px;
+        }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery Version 1.11.1 -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <script src="//code.highcharts.com/highcharts.js"></script>
+    <!--<script src="/student/js/libs/jquery.circlechart.js"></script>
+    <script src="/js/libs/circle-progress.js"></script>-->
+    <script type="text/javascript" src="{{url_for('static', filename='circle-progress.js')}}"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#" style="color: white;">Test Rocket</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- /.row -->
+
+        {% if page is none or page == 'page1' %}
+            <div class="row">
+                <div class="col-lg-12 text-center" style="margin-bottom: 20px;">
+                    <h1>Report for {{mock_test_name}} ({{target_exam_name}})</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Summary</h3>
+                        </div>
+                        <div class="panel-body">
+                        <div class="row">
+                            <span class="sublabel">Your Marks Percentage {{analysis['percentage_marks']}}</span>
+                              <div class="progress progress-sm">
+                                <div style="width: {{analysis['percentage_marks']}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="40" role="progressbar" class="progress-bar progress-bar-primary"></div>
+                              </div><!-- progress -->
+                            <span class="sublabel">Cutoff Percentage {{analysis['cutoff']}}</span>
+                              <div class="progress progress-sm">
+                                <div style="width: {{analysis['cutoff']}}%" aria-valuemax="100" aria-valuemin="0" aria-valuenow="40" role="progressbar" class="progress-bar progress-bar-success"></div>
+                              </div><!-- progress -->
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <h5 class="col-xs-5"><strong>Percentile: </strong></h5>
+                                    <h5 class="col-xs-7">{{analysis['percentile']}}</h5>
+                                </div>
+                                <div class="row">
+                                    <h5 class=" col-xs-5"><strong>Score: </strong></h5>
+                                    <h5 class="col-xs-7">{{analysis['total_marks']}} / {{analysis['maximum_marks']}}</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+				{% if analysis['expected_rank'] %}
+				  <div class="row">
+				      <h5 class=" col-xs-5"><strong>Expected Rank: </strong></h5>
+				      <h5 class="col-xs-7">{{analysis['expected_rank']}}</h5>
+				  </div>
+				  <div class="row">
+				      <h5 class=" col-xs-5"><strong>Expected Colleges: </strong></h5>
+				      <h5 class="col-xs-7">{{','.join(analysis['expected_colleges'])}}</h5>
+				  </div>
+				{% else %}
+				  <div class="row">
+				      <h5 class=" col-xs-5"><strong>NO DATA </strong></h5>
+				  </div>
+				{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-6 pull-right" id="marks-container">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Marks</h3>
+                        </div>
+                        <div class="panel-body">
+                    <div class="table-responsive">
+                    <table class="table table-striped mb30">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Correct</th>
+                                <th>Wrong</th>
+                                <th>Not Attempted</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subjectId, data in analysis['subjects'].items() %}
+                                <tr>
+                                    <td>{{ data['name'] }}</td>
+                                    <td>{{ data['correct'] | length }}</td>
+                                    <td>{{ data['incorrect'] | length }}</td>
+                                    <td>{{ data['not_attempted'] | length }}</td>
+                                    <td>{{ data['marks'] }}</td>
+                                </tr>
+                            {% endfor %}
+                                <tr>
+                                    <td colspan="4">Total</td>
+                                    <td>{{analysis['total_marks']}}</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Subject Attempt Quality</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% for subjectId, data in analysis['subjects'].items() %}
+                            {% if analysis['subjects']|length % 3 != 0 and (analysis['subjects']|length - loop.index) < 3 %}
+                                {% if analysis['subjects']|length % 3 == 2 %}
+                                    {% if (loop.index) % 3 == 1 %}
+                                        <div class="col-md-4 col-md-offset-2" id="aq-{{subjectId}}"></div>
+                                    {% else %}
+                                        <div class="col-md-4" id="aq-{{subjectId}}"></div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="col-md-4 col-md-offset-4" id="aq-{{subjectId}}"></div>
+                                {% endif %}
+                            {% else %}
+                                <div class="col-md-4" id="aq-{{subjectId}}"></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if page is none or page == 'page2' %}
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Order in which subjects attempted</h3>
+                    </div>
+                    <div class="panel-body">
+                    <div class="progress" style="width:{{total_time_bar_width}}px;" id="subject-attempt-bar">
+                        {% for subject in subject_attempt_order %}
+                            <div class="progress-bar progress-bar-{{subject['color_class']}}" style="width: {{subject['width']}}%">
+                                {{subject['name'][0]}}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <!-- <canvas id="scale" width="{{max_time_width+20}}" height="40" class="hidden">
+                    </canvas> -->
+                    <div style="width:{{max_time_width}}px;" id="scale">
+                        <div id="scale-top">
+                        </div>
+                        <div id="scale-bottom">
+                        </div>
+                    </div>
+                    <div id="scale-legend">
+                        {% for subject in subject_attempt_legend %}
+                            <div style="margin-bottom: 3px;"><span class="scale-legend label label-{{subject['color']}}">{{subject['name'][0]}}</span>{{subject['name']}}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Accuracy of subjects</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% for subjectId, data in sorted_subjects.items() %}
+                            {% if sorted_subjects|length % 3 != 0 and (sorted_subjects|length - loop.index) < 3 %}
+                                {% if sorted_subjects|length % 3 == 2 %}
+                                    {% if (loop.index) % 3 == 1 %}
+                                        <div class="col-md-4 text-center col-md-offset-2">
+                                            <div id="ac-{{subjectId}}" data-percent="{{data['accuracy']}}" class="circle">
+                                            </div>
+                                            <div class="mt20" style="padding-right: 58px;">{{data['name']}}</div>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-md-4 text-center">
+                                            <div id="ac-{{subjectId}}" data-percent="{{data['accuracy']}}" class="circle">
+                                            </div>
+                                            <div class="mt20" style="padding-right: 58px;">{{data['name']}}</div>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="col-md-4 text-center col-md-offset-4">
+                                        <div id="ac-{{subjectId}}" data-percent="{{data['accuracy']}}" class="circle">
+                                        </div>
+                                        <div class="mt20" style="padding-right: 58px;">{{data['name']}}</div>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="col-md-4 text-center">
+                                    <div id="ac-{{subjectId}}" data-percent="{{data['accuracy']}}" class="circle">
+                                    </div>
+                                    <div class="mt20" style="padding-right: 58px;">{{data['name']}}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if page is none or page == 'page3' %}
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Time spent difficulty wise</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row" id="spent_time_diff" style="height:600px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if page is none or page == 'page4' %}
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Attempt Quality wise</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row" id="spent_time_aq" style="height:600px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if page is none or page == 'page5' %}
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Overall speed and accuracy</h3>
+                    </div>
+                    <div class="panel-body" style="position:relative;">
+                        <!-- <canvas id="speed_accuracy" width="1000" height="1000" style="border:1px solid #000000;" class="hidden">
+                        </canvas> -->
+                        <div style="position:absolute;left: 7px;top: 40%;font-family: Ubuntu;transform: rotate(270deg);">Speed</div>
+                        <div class="row" id="cartessian-plane">
+                            <div class="quadrant" style="width:{{optimum_accuracy}}%;border-left:1px solid black;border-right:1px dashed black;border-bottom:1px dashed black;float: left;" id="top-left">
+                                <p class="quadrant-label" style="left:10%;top:10%;color:blue;">
+                                    High Speed Low Accuracy
+                                </p>
+                                <p style="position:absolute;left: 10%;top: 96%;display: inline-block;">
+                                    Line of optimum speed
+                                </p>
+                            </div>
+                            <div class="quadrant" style="width:{{100-optimum_accuracy}}%;border-bottom:1px dashed black;float: right;" id="top-right">
+                                <p class="quadrant-label" style="left:80%;top:10%;color:green;">
+                                    High Speed High Accuracy
+                                </p>
+                            </div>
+                            <div style="clear:both;"></div>
+                            <div class="quadrant" style="width:{{optimum_accuracy}}%;border-left:1px solid black;border-right:1px dashed black;border-bottom:1px solid black;float: left;" id="bottom-left">
+                                <p style="position:absolute;left: 83%;top: 60%;display: inline-block;width: 167px;">
+                                    Line of optimum accuracy
+                                </p>
+                                <p class="quadrant-label" style="left:10%;top:90%;color:red;">
+                                    Low Speed Low Accuracy
+                                </p>
+                            </div>
+                            <div class="quadrant" style="width:{{100-optimum_accuracy}}%;float: right;border-bottom:1px solid black;" id="bottom-right">
+                                <p class="quadrant-label" style="left:75%;top:90%;color:blue;">
+                                    Low Speed High Accuracy
+                                </p>
+                            </div>
+                            <div style="clear:both;"></div>
+                        </div>
+                        <div style="position:absolute;left: 30%;font-family:Ubuntu;">Accuracy</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Time spent subject wise and speed correctness wise</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row text-center" id="spent_time">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <!-- /.container -->
+
+</body>
+<script>
+    {% if page is none or page == 'page1' %}
+        var drawAttemptQualityChart = function(elem, title, data) {
+            $(elem).highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: title,
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: false,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                            width: '60px'
+                        },
+                        formatter: function() {
+                            return this.point.percentage > 0 ? this.point.name + ':' + this.point.y : null
+                        }
+                    },
+                    size: 100,
+                    animation: false,
+                    showInLegend: true,
+                    borderWidth: 0
+                }
+            },
+            legend: {
+                enabled: true,
+                layout: 'vertical',
+                align: 'center',
+                width: 320,
+                verticalAlign: 'bottom',
+				borderWidth: 0,
+                useHTML: true,
+				labelFormatter: function() {
+                    return '<div style="width:300px"><span style="float:left">' + this.name + '</span><span style="float:right">' + this.percentage.toFixed(1) + '% (' + this.y + ' ques)</span></div>';
+				}
+            },
+            series: [{
+                type: 'pie',
+                name: title,
+                data: data
+            }]
+        });
+        };
+
+        {% for subjectId, data in analysis['subjects'].items() %}
+            if (({{data['perfect_attempts'] | length}} + {{data['overtime_attempts'] | length}} + {{data['wasted_attempts'] | length}} + {{data['completely_wasted_attempts'] | length}}) > 0) {
+                var title = "{{data['name']}}";
+                var data = [];
+                data.push(['Great Attempt', {{data['perfect_attempts'] | length}}]);
+                data.push(['Fine Attempt', {{data['overtime_attempts'] | length}}]);
+                data.push(['Imperfect Attempt', {{data['wasted_attempts'] | length}}]);
+                data.push(['Careless Attempt', {{data['completely_wasted_attempts'] | length}}]);
+                drawAttemptQualityChart('#aq-{{subjectId}}', title, data);    
+            } else {
+                $('#aq-{{subjectId}}').append($('<p>').text("{{data['name']}} was not attempted"));
+            }
+        {% endfor %}
+
+    {% endif %}
+
+    {% if page is none or page == 'page2' %}
+        {% for subjectId, data in analysis['subjects'].items() %}
+            $('#ac-{{subjectId}}').circleProgress({
+                value: {{data['accuracy']}}/100,
+                size: 125,
+                animation: false,
+                fill: {
+                    gradient: ["red", "orange"]
+                }
+            });
+            var textNode = $('<strong>').text({{data['accuracy']}}.toFixed(1) + "%");
+            $('#ac-{{subjectId}}').append(textNode);
+        {% endfor %}
+
+        /*var c = document.getElementById("scale");
+        var scaleFont = "normal 7pt 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
+        var scaleFontColor = "black";
+        var ctx = c.getContext("2d");
+        ctx.moveTo(0, 20);
+        ctx.lineTo({{max_time_width}}, 20);
+        ctx.strokeStyle="rgba(0,0,0,.7)";
+        ctx.lineWidth = .1;
+        ctx.stroke();
+        var currentPos = 0;
+        var minuteWidth = 60*{{max_time_width}}/{{duration}};
+        ctx.font = scaleFont;
+        ctx.fillStyle = scaleFontColor;
+        var j = 0;
+        for (var i=currentPos;i<=parseInt({{duration/60}});i=i+5) {
+            ctx.moveTo(i*minuteWidth, 20);
+            if (j % 2 == 0)
+                ctx.lineTo(i*minuteWidth, 20+15);
+            else
+                ctx.lineTo(i*minuteWidth, 20-15);
+            ctx.stroke();
+            if (j % 2 == 0)
+                ctx.fillText(i, i*minuteWidth+3, 20+12);
+            else
+                ctx.fillText(i, i*minuteWidth+3, 20-12);
+            j++;
+        }*/
+
+        var currentPos = 0;
+        var minuteWidth = 60*{{max_time_width}}/{{duration}};
+        for (var i=currentPos;i<=parseInt({{duration/60}});i=i+10) {
+            $('#scale-bottom').append($('<div class="left-border-box"/>').css('left', i*minuteWidth+'px').append($('<span />').text(i)));
+        }
+        $('#scale-top').append($('<div class="red-border-box"/>').css('left', ({{analysis['total_time']/60}})*minuteWidth+'px').append($('<span />').text('Test submit').css('color', 'red')));
+
+    {% endif %}
+
+    {% if page is none or page == 'page3' %}
+        var minutes_d = [];
+        var series_d = [{
+            name: 'Easy',
+            pointWidth: 12,
+            data: []
+        }, {
+            name: 'Medium',
+            pointWidth: 12,
+            data: []
+        }, {
+            name: 'Hard',
+            pointWidth: 12,
+            data: []
+        }];
+        var marks_d = {};
+
+        {% for data in difficulty_attempt_order %}
+            minutes_d.push({{data['minutes']}});
+
+            series_d[0].data.push({{data['easy']['count']}});
+            var key = {{data['minutes']}}+series_d[0].name;
+            marks_d[key] = {{data['easy']['marks']}};
+
+            series_d[1].data.push({{data['medium']['count']}});
+            var key = {{data['minutes']}}+series_d[1].name;
+            marks_d[key] = {{data['medium']['marks']}};
+
+            series_d[2].data.push({{data['hard']['count']}});
+            var key = {{data['minutes']}}+series_d[2].name;
+            marks_d[key] = {{data['hard']['marks']}};
+        {% endfor %}
+
+        $('#spent_time_diff').highcharts({
+            chart: {
+                type: 'column',
+                //width: series[0].data.length < 5 ? 200*series[0].data.length : 1000,
+            },
+            title: {
+                text: 'Time Spent Difficulty Wise',
+                margin: 60
+            },
+            xAxis: {
+                title: {
+                    text: 'Time (minutes)'
+                },
+                categories: minutes_d,
+                tickPixelInterval: 5,
+                labels: {
+                    align: 'right',
+                    x: 35,
+                    width: '100px',
+                    useHTML: true,
+                    style: {
+                        paddingLeft: '0px',
+                        paddingRight: '0px',
+                        paddingTop: '0px',
+                        paddingBottom: '0px',
+                    },
+                    'min-width': '100px',
+                    'max-width': '100px',
+                    formatter: function () {
+                        return parseInt(this.value) <= {{test_duration_minutes}} ? this.value : null;
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                tickInterval: 2,
+                tickLength: 30,
+                //tickPositions: tickPos,
+                gridLineWidth: 1,
+                title: {
+                    text: 'No. of questions attempted'
+                },
+                stackLabels: {
+                    enabled: true,
+                    style: {
+                        fontWeight: 'bold',
+                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                    },
+                    formatter: function() {
+                        return  this.total;
+                    }
+                }
+            },
+            legend: {
+                align: 'right',
+                x: -5,
+                verticalAlign: 'top',
+                y: 25,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                borderColor: '#CCC',
+                borderWidth: 1,
+                shadow: false
+            },
+            tooltip: {
+                enabled: false,
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>';
+                }
+            },
+            plotOptions: {
+                column: {
+                    //stacking: 'normal',
+                    dataLabels: {
+                        grouping: false,
+                        enabled: true,
+                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'black',
+                        style: {
+                            fontWeight: 'normal',
+                            //textShadow: '0 0 3px white',
+                            padding: '0px'
+                        },
+                        formatter: function () {
+                            return (this.y > 0) ? '<strong>' + marks_d[this.x+this.series.name] + '</strong>' : null;
+                        }
+                    },
+                    animation: false,
+                },
+                series: {
+                    groupPadding: 0
+                }
+            },
+            series: series_d
+        });
+    {% endif %}
+
+    {% if page is none or page == 'page4' %}
+        var minutes_a = [];
+        var series_a = [{
+            name: 'Correct & Intime',
+            pointWidth: 10,
+            data: []
+        }, {
+            name: 'Correct & Overtime',
+            pointWidth: 10,
+            data: []
+        }, {
+            name: 'Incorrect & Intime',
+            pointWidth: 10,
+            data: []
+        }, {
+            name: 'Incorrect & Overtime',
+            pointWidth: 10,
+            data: []
+        }];
+        var marks_a = {};
+
+        {% for data in aq_attempt_order %}
+            minutes_a.push({{data['minutes']}});
+
+            series_a[0].data.push({{data['perfect']['count']}});
+            var key = {{data['minutes']}}+series_a[0].name;
+            marks_a[key] = {{data['perfect']['marks']}};
+
+            series_a[1].data.push({{data['overtime']['count']}});
+            var key = {{data['minutes']}}+series_a[1].name;
+            marks_a[key] = {{data['overtime']['marks']}};
+
+            series_a[2].data.push({{data['wasted']['count']}});
+            var key = {{data['minutes']}}+series_a[2].name;
+            marks_a[key] = {{data['wasted']['marks']}};
+
+            series_a[3].data.push({{data['completely_wasted']['count']}});
+            var key = {{data['minutes']}}+series_a[3].name;
+            marks_a[key] = {{data['completely_wasted']['marks']}};
+        {% endfor %}
+
+        $('#spent_time_aq').highcharts({
+            chart: {
+                type: 'column',
+                //width: series[0].data.length < 5 ? 200*series[0].data.length : 1000
+            },
+            title: {
+                text: 'Time Spent Attempt Quality Wise',
+                margin: 60
+            },
+            xAxis: {
+                title: {
+                    text: 'Time (minutes)'
+                },
+                categories: minutes_a,
+                tickPixelInterval: 5,
+                labels: {
+                    align: 'right',
+                    x: 35,
+                    formatter: function () {
+                        return parseInt(this.value) <= {{test_duration_minutes}} ? this.value : null;
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                tickInterval: 2,
+                tickLength: 30,
+                //tickPositions: tickPos,
+                gridLineWidth: 1,
+                title: {
+                    text: 'No. of questions attempted'
+                },
+                stackLabels: {
+                    enabled: true,
+                    style: {
+                        fontWeight: 'bold',
+                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                    },
+                    formatter: function() {
+                        return  this.total;
+                    }
+                }
+            },
+            legend: {
+                align: 'right',
+                x: -5,
+                verticalAlign: 'top',
+                y: 20,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                borderColor: '#CCC',
+                borderWidth: 1,
+                shadow: false
+            },
+            tooltip: {
+                enabled: false,
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>';
+                }
+            },
+            plotOptions: {
+                column: {
+                    //stacking: 'normal',
+                    dataLabels: {
+                        enabled: true,
+                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'black',
+                        style: {
+                            fontWeight: 'normal',
+                            //textShadow: '0 0 3px white'
+                        },
+                        formatter: function () {
+                            return this.y > 0 ? '<strong>' + marks_a[this.x+this.series.name] + '</strong>' : '';
+                        }
+                    },
+                    animation: false,
+                },
+                series: {
+                    groupPadding: 0
+                }
+            },
+            series: series_a
+        });
+    {% endif %}
+
+    {% if page is none or page == 'page5' %}
+
+        /*var c = document.getElementById("speed_accuracy");
+        var ctx = c.getContext("2d");
+
+        // keep width and height equal
+        var width = c.width;
+        var height = c.height;
+        // keep xOffset and yOffset equal
+        var xOffset = 20;
+        var yOffset = 20;
+
+        var cartessianSize = width - (xOffset+yOffset);
+        var pointRadius = 5;
+
+        drawCartessianPlane(ctx, xOffset, yOffset, cartessianSize);
+        drawLineOfOptimumSpeed(ctx, xOffset, yOffset, cartessianSize);
+        drawLineOfOptimumAccuracy(ctx, xOffset, yOffset, cartessianSize, 40);
+        labelQuadrants(ctx, xOffset, yOffset, cartessianSize);
+        drawPosition(ctx, xOffset, yOffset, cartessianSize, pointRadius, {{analysis['speed']}}, {{analysis['accuracy']}});*/
+
+        var optimum_accuracy = {{optimum_accuracy}};
+        var speed = {{analysis['speed']}};
+        var accuracy = {{analysis['accuracy']}};
+
+        var position = $('<div id="position"/>').css('position', 'absolute');
+        var dot = $('<div id="position-dot"/>').css({
+            width: '10px',
+            height: '10px',
+            '-webkit-border-radius': '5px',
+            '-moz-border-radius': '5px',
+            'border-radius': '5px',
+            display: 'inline-block'
+        });
+        position.append(dot).append($('<span/>').text('You'));
+
+        if (speed >= 0 && accuracy >= optimum_accuracy) {
+            var diff_percent = accuracy - optimum_accuracy;
+            var block_width_percent = 100 - optimum_accuracy;
+            var offset_percent = diff_percent*100/block_width_percent;
+            position.css('left', offset_percent+'%');
+            position.css('top', '50%');
+            position.css('color', 'green');
+            dot.css('background-color', 'green');
+            $('#top-right').append(position);
+        }
+        if (speed >= 0 && accuracy < optimum_accuracy) {
+            var diff_percent = optimum_accuracy - accuracy;
+            var block_width_percent = optimum_accuracy;
+            var offset_percent = diff_percent*100/block_width_percent;
+            position.css('left', offset_percent+'%');
+            position.css('color', 'blue');
+            dot.css('background-color', 'blue');
+            $('#top-left').append(position);
+        }
+        if (speed < 0 && accuracy < optimum_accuracy) {
+            var diff_percent = optimum_accuracy - accuracy;
+            var block_width_percent = optimum_accuracy;
+            var offset_percent = diff_percent*100/block_width_percent;
+            position.css('left', offset_percent+'%');
+            position.css('color', 'red');
+            dot.css('background-color', 'red');
+            $('#bottom-left').append(position);
+        }
+        if (speed < 0 && accuracy >= optimum_accuracy) {
+            var diff_percent = accuracy - optimum_accuracy;
+            var block_width_percent = 100 - optimum_accuracy;
+            var offset_percent = diff_percent*100/block_width_percent;
+            position.css('color', 'blue');
+            dot.css('background-color', 'blue');
+            $('#bottom-right').append(position);
+        }
+        $(function () {
+
+        var colors = ['#FF1493', '#8A2BE2', '#6495ED', '#FF8C00', '#8FBC8F', '#FFD700'],
+            categories = [],
+            data = [],
+            i = 0;
+
+            {% for subjectId, data in spent_time.items() %}
+                categories.push("{{data['name']}}");
+                data.push({
+                    y: parseFloat({{data['total_time']*100/analysis['total_time']}}.toFixed(2)),
+                    color: colors[i],
+                    drilldown: {
+                        name: "{{data['name']}} time",
+                        categories: ['Correct', 'Incorrect', 'Not Attempted'],
+                        //data: [{{data['correct']*100/analysis['total_time']}}.toFixed(2), {{data['incorrect']*100/analysis['total_time']}}.toFixed(2), {{data['not_attempted']*100/analysis['total_time']}}.toFixed(2)].map(function(s){return parseFloat(s);}),
+                        data: [{{data['correct']/60}}.toFixed(1), {{data['incorrect']/60}}.toFixed(1), {{data['not_attempted']/60}}.toFixed(1)].map(function(s){return parseFloat(s);}),
+                        color: colors[i]
+                    }
+                });
+                i++;
+            {% endfor %}
+
+            var subjectData = [],
+            correctnessData = [],
+            i,
+            j,
+            dataLen = data.length,
+            drillDataLen,
+            brightness;
+
+
+        // Build the data arrays
+        for (i = 0; i < dataLen; i += 1) {
+
+            // add browser data
+            subjectData.push({
+                name: categories[i],
+                y: data[i].y,
+                color: data[i].color
+            });
+
+            // add version data
+            drillDataLen = data[i].drilldown.data.length;
+            var color;
+            for (j = 0; j < drillDataLen; j += 1) {
+                brightness = 0.2 - (j / drillDataLen) / 5;
+                if (data[i].drilldown.categories[j] == 'Correct')
+                    color = 'green';
+                if (data[i].drilldown.categories[j] == 'Incorrect')
+                    color = 'red';
+                if (data[i].drilldown.categories[j] == 'Not Attempted')
+                    color = 'gray';
+                correctnessData.push({
+                    name: data[i].drilldown.categories[j],
+                    y: data[i].drilldown.data[j],
+                    color: color
+                });
+            }
+        }
+
+        // Create the chart
+        $('#spent_time').highcharts({
+            chart: {
+                type: 'pie',
+                height: 500,
+                marginRight: 350
+            },
+            title: {
+                text: 'Time spent on questions'
+            },
+            yAxis: {
+                title: {
+                    text: 'Total percent time spent'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    shadow: false,
+                    center: ['50%', '50%'],
+                    animation: false
+                }
+            },
+            tooltip: {
+                valueSuffix: '%'
+            },
+            legend: {
+                enabled: true,
+                floating: true,
+                layout: 'vertical',
+                align: 'right',
+                width: 300,
+                verticalAlign: 'center',
+				borderWidth: 0,
+                useHTML: true,
+                y: 100,
+                x: 10,
+				labelFormatter: function() {
+                    return '<div class="row" style="width:300px"><div class="col-md-8">' + this.name + '</div><div class="col-md-4">' + this.percentage.toFixed(2) + '%' + '</div></div>'
+                    + '<div class="row" style="width:300px"><div class="col-md-7 col-md-offset-1"><div class="correct-legend-background">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="sub-legend">Correct</div></div><div class="col-md-4">' + correctnessData[this.series.xData.indexOf(this.x)*3 + 0].y + ' min</div></div>'
+                    + '<div class="row" style="width:300px"><div class="col-md-7 col-md-offset-1"><div class="incorrect-legend-background">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="sub-legend">Incorrect</div></div><div class="col-md-4">' + correctnessData[this.series.xData.indexOf(this.x)*3 + 1].y + ' min</div></div>'
+                    + '<div class="row" style="width:300px"><div class="col-md-7 col-md-offset-1"><div class="not-attempted-legend-background">&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="sub-legend">Not Attempted</div></div><div class="col-md-4">' + correctnessData[this.series.xData.indexOf(this.x)*3 + 2].y + ' min</div></div>';
+				}
+            },
+            series: [{
+                name: 'Subjects',
+                data: subjectData,
+                size: '60%',
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        return this.y > 5 ? this.point.name + ' ' + this.y + '%' : null;
+                    },
+                    color: 'white',
+                    distance: -50
+                },
+                showInLegend: true
+            }, {
+                name: 'Correctness',
+                data: correctnessData,
+                size: '80%',
+                innerSize: '60%',
+                dataLabels: {
+                    enabled: true,
+                    formatter: function () {
+                        // display only if larger than 1
+                        return this.y > 1 ? '<b>' + this.point.name + ':</b> ' + this.y + 'min'  : null;
+                    }
+                },
+                //showInLegend: true
+            }]
+        });
+    });
+    {% endif %}
+    $('g[opacity="0"]').attr('opacity', '1')
+    $('text[text-anchor="end"]').each(function() {
+            if($(this).text().trim() == 'Highcharts.com')
+                $(this).hide();
+        });
+    setTimeout(function(){
+        $('text[text-anchor="end"]').each(function() {
+            if($(this).text().trim() == 'Highcharts.com')
+                $(this).hide();
+        });
+    }, 200);
+</script>
+</html>

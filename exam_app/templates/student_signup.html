@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="/student/assets/images/favicon.png" type="image/png">
+
+  <title>TestRocket | Signup</title>
+
+  <link href="student/assets/css/style.default.css" rel="stylesheet">
+  <link href="student/assets/css/custom.css" rel="stylesheet">
+
+    <!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
+    typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);
+    b._i.push([a,e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
+    mixpanel.init("6397edeccae8afcf331f7ae9ef1fc0fd", { track_pageview: false });</script><!-- end Mixpanel -->
+
+    <script type="text/javascript">
+        mixpanel.track("SignUp Page Loaded")
+    </script>
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+    <style>
+        .has-error .form-control {
+            border-color: #a94442;
+        }
+    </style>
+    <script>
+        function matchPasswords(input) {
+            if (input.value != document.getElementById('password').value) {
+                input.setCustomValidity('Both passwords must match.');
+            }
+            else {
+                input.setCustomValidity('');
+            }
+        }
+    </script>
+</head>
+
+<body class="signin">
+
+<section>
+
+    <div class="signuppanel">
+
+        <div class="row">
+            <div class="col-md-6">
+
+            <div class="signup-info">
+                <div class="logopanel">
+                    <img src="/student/assets/images/logo.png" style="width:300px" />
+                </div><!-- logopanel -->
+
+                <div class="mb10"></div>
+
+                <h3><strong>Exam Preparation Simplified.</strong></h3>
+
+                <div class="mb20"></div>
+
+                <div class="feat-list">
+                    <img src="/student/assets/images/mentoring-feature.png" />
+                    <h4 class="text-success">Mentoring &amp; Speed Tips</h4>
+                    <p></p>
+                </div>
+
+                <div class="feat-list">
+                    <img src="/student/assets/images/analytics-feature.png" />
+                    <h4 class="text-success">Strategize Your Prepration</h4>
+                    <p></p>
+                </div>
+
+                <div class="feat-list">
+                    <img src="/student/assets/images/content-feature.png" />
+                    <h4 class="text-success">Best In Class Content</h4>
+                    <p></p>
+                </div>
+
+                <div class="feat-list">
+                    <img src="/student/assets/images/customize-feature.png" />
+                    <h4 class="text-success">Personalized Preparation</h4>
+                    <p></p>
+                </div>
+
+            </div><!-- signup-info -->
+
+            </div>
+            <div class="col-md-6">
+
+                <form method="post" action="/123_456_789_123_student_signup">
+
+                    <h3 class="nomargin">Sign Up</h3>
+                    <p class="mt5 mb20">Already a member? <a href="/student_signin"><strong>Sign In</strong></a></p>
+
+                    <div class="mb10">
+                        <label class="control-label">Name</label>
+                        <input type="text" class="form-control" name="name" required {% if name %} value="{{name}}" {% endif %}/>
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Email</label>
+                        <input id="email" type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" class="form-control" name="email" required {% if email %} value="{{email}}" {% endif %} oninvalid="setCustomValidity('Not a valid email')" onkeyup="try{setCustomValidity('')}catch(e){}"/>
+                        {% if error and error == 'email'%}
+                        <label for="email" class="error">Email is taken.</label>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Password</label>
+                        <input type="password" pattern=".{5,}" class="form-control" id="password" name="password" required {% if password %} value="{{password}}" {% endif %} oninvalid="setCustomValidity('Password must be minimum 5 characters')" onkeyup="try{setCustomValidity('')}catch(e){}"/>
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Retype Password</label>
+                        <input type="password" class="form-control" id="password_r" name="password_r" required {% if password %} value="{{password}}" {% endif %} oninput="matchPasswords(this)" />
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Mobile No</label>
+                        <input id="mobile_no" type="tel" pattern="[0-9]{10}" class="form-control" name="mobile_no" required {% if mobile_no %} value="{{mobile_no}}" {% endif %} oninvalid="setCustomValidity('Not a valid mobile number')" onkeyup="try{setCustomValidity('')}catch(e){}"/>
+                        {% if error and error == 'mobile_no'%}
+                        <label for="mobile_no" class="error">Mobile no is taken.</label>
+                        {% endif %}
+                    </div>
+
+
+                    <!--<label class="control-label">Target Year</label>
+                    <div class="row mb10">
+                        <div class="col-sm-4">
+                            <select class="form-control chosen-select" name="target_year" required>
+                                <option value="2015" {% if target_year and target_year == 2015 %} selected {% endif %}>2015</option>
+                                <option value="2016" {% if target_year and target_year == 2016 %} selected {% endif %}>2016</option>
+                                <option value="2017" {% if target_year and target_year == 2017 %} selected {% endif %}>2017</option>
+                                <option value="2018" {% if target_year and target_year == 2018 %} selected {% endif %}>2018</option>
+                                <option value="2019" {% if target_year and target_year == 2019 %} selected {% endif %}>2019</option>
+                                <option value="2020" {% if target_year and target_year == 2020 %} selected {% endif %}>2020</option>
+                            </select>
+                        </div>
+                    </div>-->
+
+                    <div class="mb10">
+                        <label class="control-label">Branches</label>
+                        <select class="form-control chosen-select" multiple name="branches" data-placeholder="Select Branch" id="branches" >
+                            <option value="1" {% if branches and '1' in branches %} selected {% endif %}>Engineering</option>
+                            <option value="2" {% if branches and '2' in branches %} selected {% endif %}>Medical</option>
+                            <option value="3" {% if branches and '3' in branches %} selected {% endif %}>Foundation</option>
+                            <!--<option value="3" {% if branches and '3' in branches %} selected {% endif %}>Commerce</option>
+                            <option value="4" {% if branches and '4' in branches %} selected {% endif %}>Civil Services</option>-->
+                        </select>
+                        <label for="branches" class="error" style="display:none;">Select a branch</label>
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Referral Code (optional)</label>
+                        <input style="text-transform:uppercase;" type="text" class="form-control" name="refcode" {% if refcode %} value="{{refcode}}" {% endif %}/>
+                    </div>
+
+                    <!--<div class="mb10">
+                        <label class="control-label">Target Exams</label>
+                        <select class="form-control chosen-select" multiple name="target_exams" required >
+                            <option value="1" {% if not target_exams %} selected {% endif %} {% if target_exams and '1' in target_exams %} selected {% endif %}>JEE Advanced</option>
+                            <option value="2" {% if target_exams and '2' in target_exams %} selected {% endif %}>JEE Mains</option>
+                            <option value="3" {% if target_exams and '3' in target_exams %} selected {% endif %}>BITSAT</option>
+                            <option value="4" {% if target_exams and '4' in target_exams %} selected {% endif %}>AIPMT</option>
+                            <option value="5" {% if target_exams and '5' in target_exams %} selected {% endif %}>AIIMS</option>
+                        </select>
+                    </div>-->
+
+                    <!--<div class="mb10">
+                        <label class="control-label">City</label>
+                        <input type="text" class="form-control" name="city" {% if city %} value="{{city}}" {% endif %}/>
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Area</label>
+                        <input type="text" class="form-control" name="area" {% if area %} value="{{area}}" {% endif %}/>
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Father Name</label>
+                        <input type="text" class="form-control" name="father_name" {% if father_name %} value="{{father_name}}" {% endif %}/>
+                    </div>
+
+                    <div class="mb10">
+                        <label class="control-label">Father Mobile No</label>
+                        <input type="text" class="form-control" name="father_mobile_no" {% if father_mobile_no %} value="{{father_mobile_no}}" {% endif %}/>
+                    </div>-->
+
+                    <br />
+                    <input type="hidden" name="host" id="host" value="" />
+                    <button class="btn btn-success btn-block">Sign Up</button>
+                </form>
+            </div><!-- col-sm-6 -->
+
+        </div><!-- row -->
+
+    </div><!-- signuppanel -->
+
+</section>
+
+
+<script src="student/js/libs/jquery-1.10.2.min.js"></script>
+<script src="student/js/libs/jquery-migrate-1.2.1.min.js"></script>
+<script src="student/js/libs/bootstrap.min.js"></script>
+<script src="student/js/libs/modernizr.min.js"></script>
+
+<script src="student/js/libs/chosen.jquery.min.js"></script>
+
+<script>
+    jQuery(document).ready(function(){
+
+        // Chosen Select
+        jQuery(".chosen-select").chosen({
+            'width':'100%',
+            'white-space':'nowrap',
+            disable_search_threshold: 10
+        });
+        $('#host').val(location.origin);
+        $('form').submit(function() {
+            if ($('#branches').val() == null) {
+                $('label[for="branches"]').show();
+                return false;
+            }
+            else
+                $('label[for="branches"]').hide();
+        });
+    });
+</script>
+
+</body>
+</html>

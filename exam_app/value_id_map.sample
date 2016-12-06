@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+
+# This is a sample of how the value id map should be.
+
+SUBJECT_ID_MAP = {
+    'Physics': 1,
+    'Chemistry': 2,
+    'Mathematics': 3,
+    'Biology': 44,
+    'English (BITSAT)': 53,
+    'Logical Reasoning (BITSAT)': 54,
+    'GK': 55
+}

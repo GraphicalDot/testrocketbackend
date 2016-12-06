@@ -1,0 +1,5 @@
+.DS_Store
+.idea/
+*.pyc
+*.log
+exam_app/value_id_map.py
