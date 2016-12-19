@@ -17,12 +17,14 @@ We will need to create the necessary users etc. in PostgreSQL to get the final s
 CREATE DATABASE exam_prep;
 CREATE USER postgres WITH PASSWORD 'postgres'; /* this is the username password used by API code to connect to the DB. */
 GRANT ALL PRIVILEGES ON DATABASE "exam_prep" to postgres;
-CREATE EXTENSION hstore; /* this is used for storing key value pairs in DB columns. */
+psql -d exam_app -c 'create extension hstore;'
+/*CREATE EXTENSION hstore;  this is used for storing key value pairs in DB columns. */
 ```
 
 You will also need to seed the DB with some basic data and the first user. Later on this first user will be used to create all the future users.
 
 ```sql
+\connect exam_app
 INSERT INTO user_types VALUES(1,'data_operator'), (2, 'intern'), (3, 'teacher'), (4,'student'), (5, 'teacher'); /* different types of supported users. */
 INSERT INTO data_operators(name, email, password, is_active, type) VALUES('first_user', 'hi@testrocket.in', 'e668d6aab96940f26fbe81ea538eb71b', true, 1);
 ```

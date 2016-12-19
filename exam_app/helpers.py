@@ -22,7 +22,7 @@ from exam_app.models.mock_test import MockTest
 from exam_app.models.student import Student
 
 
-SendGridClient = sendgrid.SendGridClient(app.config['SENDGRID_USER'], app.config['SENDGRID_KEY'])
+#SendGridClient = sendgrid.SendGridClient(app.config['SENDGRID_USER'], app.config['SENDGRID_KEY'])
 TIMESTAMP_SIGNER = TimestampSigner(app.config['SECRET_KEY'])
 
 

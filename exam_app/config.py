@@ -879,7 +879,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     _POSTGRES = {
         'host': 'localhost',
-        'user': 'postgres',
+        'user': 'postgres2',
         'password': 'postgres',
         'database': 'exam_prep'
     }
