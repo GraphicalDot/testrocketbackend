@@ -7,7 +7,7 @@ from base64 import b64encode
 from flask.views import MethodView
 from flask import render_template, redirect, request
 from flask.ext.restful import reqparse
-
+from flask.json import jsonify
 from exam_app import app
 from exam_app.auth import authenticate_user
 from exam_app.exceptions import AuthenticationFailure
@@ -26,6 +26,12 @@ class StudentSignin(MethodView):
         try:
             student = authenticate_user('student', args['email'], md5(args['password']).hexdigest(), by='email')
         except AuthenticationFailure:
-            return render_template('student_signin.html', error='auth', **args)
+                return jsonify({"success": False, 
+                    "error": True})
+        #return render_template('student_signin.html', error='auth', **args)
         token = b64encode(student.email) + '|' + student.password + '|' + str(student.id) + '|' + b64encode(student.name) + '|' + b64encode(','.join(student.target_exams))
-        return redirect(args['host'] + app.config['STUDENT_URL']+'#token='+token)
+        #return redirect(args['host'] + app.config['STUDENT_URL']+'#token='+token)
+        print token
+        return jsonify({"success": True, 
+                "error": False,
+                "token": token})

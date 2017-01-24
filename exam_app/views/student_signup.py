@@ -4,6 +4,7 @@ import json
 from hashlib import md5
 from base64 import b64encode
 
+ 
 import flask
 from flask.views import MethodView
 from flask import render_template, redirect, request
@@ -61,7 +62,7 @@ class StudentSignup(MethodView):
             print student 
         except EmailAlreadyRegistered:
             #return render_template('student_signup.html', error='email', **args)
-            print "email aredy "
+            print "email is already registered "
             
             return flask.jsonify({"success": False, 
                 "error": True,
@@ -76,12 +77,12 @@ class StudentSignup(MethodView):
                 "is_email_registered": None,
                 "is_mobile_registered": True})
 
-
-        #welcome_student_email_task.delay({'name': student.name, 'email': student.email})
+        #This will send an welcome email to the
+        welcome_student_email_task.delay({'name': student.name, 'email': student.email})
         token = b64encode(student.email) + '|' + student.password + '|' + str(student.id) + '|' + b64encode(student.name) + '|' + b64encode(','.join(student.target_exams))
         # return redirect(args['host'] + app.config['STUDENT_URL']+'#token='+token)
         
 
-        print flask.jsonify({"success": True, 
+        return flask.jsonify({"success": True, 
                 "error": False,
                 "token": token})
