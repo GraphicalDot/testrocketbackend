@@ -21,6 +21,7 @@ from exam_app.models import db
 
 
 def init_sqlalchemy(app):
+    print "Running sqlalchemy init function"
     db.init_app(app)
     with app.app_context():
         db.create_all()
@@ -118,7 +119,8 @@ api.add_resource(S3RequestSigner, '/sign_s3_question_upload')
 from exam_app.views import *
 
 
-app.add_url_rule('/123_456_789_123_student_signup', view_func=StudentSignup.as_view('student_signup'))
+# app.add_url_rule('/123_456_789_123_student_signup', view_func=StudentSignup.as_view('student_signup'))
+app.add_url_rule('/student_signup', view_func=StudentSignup.as_view('student_signup'))
 app.add_url_rule('/student_signin', view_func=StudentSignin.as_view('student_signin'))
 app.add_url_rule('/pdf_report/<int:id>', view_func=PdfReport.as_view('pdf_report'))
 app.add_url_rule('/institute_signin', view_func=InstituteSignin.as_view('institute_signin'))

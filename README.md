@@ -36,3 +36,15 @@ There is a Postman collection explaining about the API usage. The whole API is p
 
 1. `<user_type>|<username>` is the format for specifying the `username`. Triangular brackets are not supposed to be used, they are just for readability here.
 2. `password` is given as normal string of MD5 of the password.
+
+
+
+#If you are using an old application then the student table has some issue with
+# branches filed as branches on the front end are listed as ["Engineering",
+# "Medical", "Foundation"] which are too too big to fit in db.String(1), so now
+# models/student.py has updated students table. If you are running the
+#application for the first time, the datatype for branches in students will be
+#updated automaticlly . But if its already runing , enter this command on your 
+# psql console, It will do the needful. 
+alter table students alter column  branches type character varying(50)[];
+

@@ -22,7 +22,7 @@ class Student(User, db.Model):
     school = db.Column(db.String(100))
     ntse_score = db.Column(db.Float)
     roll_no = db.Column(db.String(20))
-    branches = db.Column(ARRAY(db.String(1)))
+    branches = db.Column(ARRAY(db.String(100)))
     target_exams = db.Column(ARRAY(db.String(1)))
     target_exam_roll_nos = db.Column(ARRAY(db.String(100)))
     target_year = db.Column(db.Integer)
@@ -61,14 +61,16 @@ class Student(User, db.Model):
         :param registered_from:
         :return:
         """
-        user_type = UserTypes.query.filter_by(name='student').first()
-        student = cls(name=name, email=email, password=password, mobile_no=mobile_no, city=city, area=area, pin=pin,
+        try:
+            user_type = UserTypes.query.filter_by(name='student').first()
+            student = cls(name=name, email=email, password=password, mobile_no=mobile_no, city=city, area=area, pin=pin,
                       school=school, ntse_score=ntse_score, roll_no=roll_no, branches=branches, target_exams=target_exams,
                       target_exam_roll_nos=target_exam_roll_nos, target_year=target_year, father_name=father_name,
                       father_mobile_no=father_mobile_no, payment_plan_id=payment_plan_id, registered_from=registered_from,
                       type=user_type.id, refcode=refcode)
-        db.session.add(student)
-        try:
+    
+        
+            db.session.add(student)
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
@@ -76,7 +78,9 @@ class Student(User, db.Model):
                 raise EmailAlreadyRegistered
             if 'mobile_no' in e.message:
                 raise MobileNoAlreadyRegistered
-            raise e
+        except Exception as e:
+            print e
+
         return student
 
     @classmethod

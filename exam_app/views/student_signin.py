@@ -21,7 +21,7 @@ class StudentSignin(MethodView):
         parser = reqparse.RequestParser()
         parser.add_argument('email', type=str, required=True)
         parser.add_argument('password', type=str, required=True)
-        parser.add_argument('host', type=str, required=True)
+        # parser.add_argument('host', type=str, required=True)
         args = parser.parse_args()
         try:
             student = authenticate_user('student', args['email'], md5(args['password']).hexdigest(), by='email')

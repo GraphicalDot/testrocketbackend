@@ -4,6 +4,7 @@ import json
 from hashlib import md5
 from base64 import b64encode
 
+import flask
 from flask.views import MethodView
 from flask import render_template, redirect, request
 from flask.ext.restful import reqparse
@@ -32,7 +33,7 @@ class StudentSignup(MethodView):
         parser.add_argument('target_exams', type=str, action='append')
         parser.add_argument('father_name', type=str)
         parser.add_argument('father_mobile_no', type=str)
-        parser.add_argument('host', type=str, required=True)
+        parser.add_argument('host', type=str)
         try:
             args = parser.parse_args()
         except Exception as e:
@@ -51,16 +52,36 @@ class StudentSignup(MethodView):
             if '3' in args['branches']:
                 args['target_exams'].extend(['6'])
 
-        print args
+        
         try:
             student = Student.create(name=args['name'], email=args['email'], password=md5(args['password']).hexdigest(),
                                  mobile_no=args['mobile_no'], target_year=args['target_year'], city=args['city'], area=args['area'],
                                  branches=args['branches'], target_exams=args['target_exams'], father_name=args['father_name'], 
                                  father_mobile_no=args['father_mobile_no'], registered_from='independent', refcode=args['refcode'])
+            print student 
         except EmailAlreadyRegistered:
-            return render_template('student_signup.html', error='email', **args)
+            #return render_template('student_signup.html', error='email', **args)
+            print "email aredy "
+            
+            return flask.jsonify({"success": False, 
+                "error": True,
+                "is_email_registered": True,
+                "is_mobile_registered": None})
+
         except MobileNoAlreadyRegistered:
-            return render_template('student_signup.html', error='mobile_no', **args)
-        welcome_student_email_task.delay({'name': student.name, 'email': student.email})
+            #return render_template('student_signup.html', error='mobile_no', **args)
+            print "mobile aredy "
+            return flask.jsonify({"success": False, 
+                "error": True,
+                "is_email_registered": None,
+                "is_mobile_registered": True})
+
+
+        #welcome_student_email_task.delay({'name': student.name, 'email': student.email})
         token = b64encode(student.email) + '|' + student.password + '|' + str(student.id) + '|' + b64encode(student.name) + '|' + b64encode(','.join(student.target_exams))
-        return redirect(args['host'] + app.config['STUDENT_URL']+'#token='+token)
+        # return redirect(args['host'] + app.config['STUDENT_URL']+'#token='+token)
+        
+
+        print flask.jsonify({"success": True, 
+                "error": False,
+                "token": token})
