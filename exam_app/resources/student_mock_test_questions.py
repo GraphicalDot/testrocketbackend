@@ -11,7 +11,7 @@ from exam_app.models.question import Question
 from exam_app.models.mock_test import MockTest
 from exam_app.resources.mock_test_list import MockTestList
 from exam_app.resources.question_list import QuestionList
-
+from pprint import pprint 
 
 class StudentMockTestQuestions(AuthorizedResource):
     get_response = {
@@ -60,4 +60,6 @@ class StudentMockTestQuestions(AuthorizedResource):
         questions = {q.id: q for q in questions}
         for subject in sorted_question_data:
             subject['questions'] = map(lambda q_id: questions[q_id], subject['q_ids'])
+        
+        pprint({'mock_test': mock_test, 'subjects': sorted_question_data})
         return {'mock_test': mock_test, 'subjects': sorted_question_data}

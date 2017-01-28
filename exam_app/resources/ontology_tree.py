@@ -8,7 +8,8 @@ from exam_app.resources.common import AuthorizedResource
 from exam_app.exceptions import TestAppException
 from exam_app.error_responses import get_error_response
 from exam_app import app
-
+from pprint import pprint
+from flask.json import jsonify
 
 def ontology_item_json_type(item):
     """
@@ -80,6 +81,7 @@ class OntologyTree(AuthorizedResource):
         parser.add_argument('get_theory', type=int, choices=[0, 1], default=1)
         args = parser.parse_args()
         nodes = Ontology.get_all_nodes_of_tree(args['get_theory'] == 1)
+        pprint(nodes)
         return {'nodes': nodes}
 
     @marshal_with(post_response)

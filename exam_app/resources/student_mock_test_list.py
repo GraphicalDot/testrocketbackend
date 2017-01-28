@@ -184,5 +184,6 @@ class StudentMockTestList(AuthorizedResource):
                         'created_at': str(available_mock_tests_for_student[id].created_at)
 
                     } for id in val2['not_attempted']]
-
+        import pprint
+        pprint.pprint({'mock_tests': result , 'institute_name': institute_name})
         return {'mock_tests': result, 'institute_name': institute_name}

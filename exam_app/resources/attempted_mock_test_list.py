@@ -173,6 +173,7 @@ class AttemptedMockTestList(AuthorizedResource):
         mock_test_id = args['mock_test_id']
         pushed_mock_test_id = args['pushed_mock_test_id']
         mock_test = MockTest.query.get(mock_test_id)
+        print args
         if mock_test is None:
             raise InvalidMockTestId
 

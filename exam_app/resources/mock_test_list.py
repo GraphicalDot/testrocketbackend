@@ -112,6 +112,7 @@ class MockTestList(AuthorizedResource):
         mock_test_pag_obj = MockTest.query.filter(*exprs).order_by(MockTest.created_at.desc()).paginate(args['page'], args['limit'])
         mock_tests = mock_test_pag_obj.items
         total = mock_test_pag_obj.total
+        print mock_tests
         return {'mock_tests': mock_tests, 'total': total}
 
     @marshal_with(post_response)
