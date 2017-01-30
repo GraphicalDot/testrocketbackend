@@ -21,14 +21,16 @@ class InstituteSignin(MethodView):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
         parser.add_argument('password', type=str, required=True)
-       
+        
        
         args = parser.parse_args()
+        print args
         try:
             institute = authenticate_user('institute', args['username'], md5(args['password']).hexdigest(), by='username')
         except AuthenticationFailure:
+            print "Authentication failure"
             return jsonify({"error": True, "success": False})
-        token = b64encode(institute.email) + '|' + institute.password + '|' + str(institute.id) + '|' + b64encode(institute.name)
+        token = b64encode(institute.email) + '|' + institute.password + '|' + str(institute.id) + '|' + b64encode(institute.name) + '|'+ b64encode(institute.logo_url)
         return jsonify({
                 "success": True,
                 "error": False,

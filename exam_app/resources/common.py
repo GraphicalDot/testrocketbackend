@@ -62,6 +62,7 @@ def comma_separated_ints_type(arg):
     :param arg: string
     :return: list
     """
+    print arg + "From comma seperated ints type"
     if isinstance(arg, basestring):
         lst = map(lambda x: x.strip(), arg.split(','))
         try:

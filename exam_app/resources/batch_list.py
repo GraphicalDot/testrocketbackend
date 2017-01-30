@@ -65,7 +65,7 @@ class BatchList(AuthorizedResource):
         parser.add_argument('type', type=str, choices=app.config['BATCH_TYPE'].keys())
         parser.add_argument('target_year', type=int)
         parser.add_argument('target_exam', type=str, choices=app.config['TARGET_EXAMS'].keys())
-        parser.add_argument('branch', type=str, choices=app.config['BATCH_FIELD'].keys())
+        parser.add_argument('branch', type=str, choices=app.config['BATCH_FIELD'].keys()) #Engineering or medical
         parser.add_argument('status', type=int, default=-1)
         args = parser.parse_args()
 
@@ -73,6 +73,10 @@ class BatchList(AuthorizedResource):
             args['branches'] = [args['branch'], ]
         args.pop('branch', None)
 
+        ##The insitute id is from authorized resource parent classs, which was initiated 
+        ##when the user signs in, The authorized resource returns instance of the class
+        ## by adding two kwaqrgs user_type and user 
+    
         batches = Batch.get_filtered(institute_id=kwargs['user'].id, **args)
         return {'batches': batches}
 
