@@ -61,9 +61,20 @@ class StudentMockTestList(AuthorizedResource):
             raise InvalidStudentId
 
         attempted_mock_tests = Student.get_attempted_mock_tests(student.id)
+
+        ##pushed_mock_test_ids entries filtered with student id and the batches to which he is enrolled to
+        #  id | mock_test_id | batch_id |         pushed_at          | expires_at 
+        # ----+--------------+----------+----------------------------+------------
+        #  1 |            4 |        1 | 2017-01-28 20:49:29.714396 | 
+        #  2 |            5 |        1 | 2017-01-28 21:05:51.978209 | 
+        #  3 |            4 |        2 | 2017-01-30 21:29:06.667906 | 
+        #  4 |            4 |        3 | 2017-01-30 21:29:06.668013 | 
+
         pushed_mock_tests = Student.get_pushed_mock_tests(student.id)
 
         institute_name = None
+
+        ##this next block of code is the pathetic i have seen just to get institute name
         if len(pushed_mock_tests) > 0:
             batch_id = pushed_mock_tests[0].batch_id
             batch = Batch.get(batch_id)

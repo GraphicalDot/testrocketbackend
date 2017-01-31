@@ -1,22 +1,35 @@
 # -*- coding: utf-8 -*-
 
 import os
-try:
-    from value_id_map import SUBJECT_ID_MAP
-except ImportError:
-    # When file not present use values these values
-    SUBJECT_ID_MAP = {
-        'Physics': 58,
-        'Chemistry': 59,
-        'Mathematics': 60,
-        'Biology': 44,
-        'English Proficency': 53,
-        'Logical Reasoning': 54,
-        'GK': 55,
-        'Scholastic Aptitude Test': 1738,
-        'Language Comprehensive Test': 1845,
-        'Mental Ability Test': 1866
-    }
+# try:
+#     from value_id_map import SUBJECT_ID_MAP
+# except ImportError:
+#     # When file not present use values these values
+#     SUBJECT_ID_MAP = {
+#         'Physics': 58,
+#         'Chemistry': 59,
+#         'Mathematics': 60,
+#         'Biology': 44,
+#         'English Proficency': 53,
+#         'Logical Reasoning': 54,
+#         'GK': 55,
+#         'Scholastic Aptitude Test': 1738,
+#         'Language Comprehensive Test': 1845,
+#         'Mental Ability Test': 1866
+#     }
+
+
+SUBJECT_ID_MAP = {
+    'Physics': 1,
+    'Chemistry': 2,
+    'Mathematics': 3,
+    'Biology': 44,
+    'English (BITSAT)': 53,
+    'Logical Reasoning (BITSAT)': 54,
+    'Logical Reasoning': 57,
+    'GK': 55,
+    'English Proficency': 56
+}
 
 
 class Config(object):

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pprint 
 
 import json
 import datetime
@@ -167,7 +168,7 @@ class AttemptedMockTestList(AuthorizedResource):
     def post(self, *args, **kwargs):
         parser = reqparse.RequestParser()
         parser.add_argument('mock_test_id', type=int, required=True)
-        parser.add_argument('pushed_mock_test_id', type=int)
+        parser.add_argument('pushed_mock_test_id')
         parser.add_argument('answers', type=self.__class__.answers_json_type, required=True)
         args = parser.parse_args()
         mock_test_id = args['mock_test_id']
@@ -175,15 +176,28 @@ class AttemptedMockTestList(AuthorizedResource):
         mock_test = MockTest.query.get(mock_test_id)
         print args
         if mock_test is None:
+            print "InvalidMockTestId"
             raise InvalidMockTestId
+        answers = args['answers']
 
+        pprint.pprint(answers)
+
+
+        if pushed_mock_test_id == 'None':
+            pushed_mock_test_id = None
+        else:
+            pushed_mock_test_id = int(pushed_mock_test_id)
+
+        print pushed_mock_test_id
         # get attempted mock tests by the student which have same pushed id as in this request or a null pushed id and
         # same mock test id as this request. If such a mock test is found error is returned. This prevents reattempting
         # the mock test probably from a different browser/ browser tab
-        amt = AttemptedMockTest.query.filter(AttemptedMockTest.student_id == kwargs['user'].id, or_(
+        amt = AttemptedMockTest.query.filter(AttemptedMockTest.student_id == kwargs['user'].id, or_
+            (
             and_(AttemptedMockTest.pushed_mock_test_id != None, AttemptedMockTest.pushed_mock_test_id == pushed_mock_test_id),
             and_(AttemptedMockTest.pushed_mock_test_id == None, AttemptedMockTest.mock_test_id == mock_test_id))).all()
         if len(amt) > 0:
+            print "MockTestTestAlreadyAttempted"
             raise MockTestTestAlreadyAttempted
 
         # get attempted mock tests of the same type and check if number of permitted mock tests as per payment plan is
@@ -192,17 +206,19 @@ class AttemptedMockTestList(AuthorizedResource):
         attempted_mock_tests = MockTest.query.filter(MockTest.id.in_(attempted_mock_test_ids)).all()
         attempted_mock_tests_of_type = filter(lambda m: m.type == mock_test.type, attempted_mock_tests)
         if len(attempted_mock_tests_of_type) >= app.config['PAYMENT_PLAN'][mock_test.type]:
+            print "PaymentPlanLimitReached"
             raise PaymentPlanLimitReached
 
         # create attempted test entry
         attempted_mock_test = AttemptedMockTest(pushed_mock_test_id=pushed_mock_test_id, mock_test_id=mock_test_id, student_id=kwargs['user'].id,
                                 attempted_at=datetime.datetime.utcnow())
-        answers = args['answers']
+        
         question_ids = answers.keys()
         questions = {q.id: q for q in Question.get_filtertered_list(include_question_ids=question_ids)['questions']}
         if len(question_ids) != len(questions):
             raise InvalidQuestionId
         marking_scheme = app.config['MARKING_SCHEME']
+        print marking_scheme
         target_exam = mock_test.target_exam
 
         maximum_marks = 0
@@ -225,19 +241,31 @@ class AttemptedMockTestList(AuthorizedResource):
         # list with durations of questions
         durations_list = []
 
+        pprint.pprint(answers.items())
         for question_id, value in answers.items():
             question_id = int(question_id)
             question = questions[question_id]
-            subject_id = question.ontology[0]
+            subject_id = question.ontology[0] ##{1, 2, 3, 10, 11} integer
+
+            ##marking scheme stupidity is str int str
+            print question.ontology
+            print "subject_id <<%s>>  <<%s>>"%(type(subject_id), subject_id)
+            print "target_exam <<%s>> <<%s>>"%(type(target_exam), target_exam)
             topic_id = None
-            for node_id in question.ontology:
+            for node_id in question.ontology: ##question ontology like {1, 2, 3, 11}
+                ## This will set topic_id as the topic_id for the question
                 if node_id in ontology:
-                    if ontology[node_id].type == '3':
+                    if ontology[node_id].type == '3': ##ONTOLOGY_NODE_TYPES = {'1': 'Chapter', '2': 'Broad Category', '3': 'Topic', '4': 'Sub Topic', '5': 'Sub-Sub Topic'}
                         topic_id = node_id
                         break
 
-            # subject seen first time
+            print "Here is the topic_id %s"%topic_id
+
+            # subject seen first time, 
+            ## this iwll always be true when iteration starts may not be later on 
+            ## so if subject_wise will have only one entry that is "chemistry"
             if subject_id not in subject_wise:
+                ## this will a dict where each key correponds to each subject 
                 subject_wise[subject_id] = {
                     'name': ontology[subject_id].name,
                     'topic_ids': [],
@@ -253,7 +281,9 @@ class AttemptedMockTestList(AuthorizedResource):
                     'completely_wasted_attempts': [],
                 }
 
-            # topic seen first time
+            ##this will populate a list of dictionaries where each dict will corresponds to different 
+            ## topic name
+
             if topic_id is not None and topic_id not in topic_wise:
                 topic_wise[topic_id] = {
                     'name': ontology[topic_id].name,
@@ -268,14 +298,29 @@ class AttemptedMockTestList(AuthorizedResource):
                     'overtime_attempts': [],
                     'completely_wasted_attempts': [],
                 }
-                subject_wise[subject_id]['topic_ids'].append(topic_id)
+                subject_wise[subject_id]['topic_ids'].append(topic_id) ## this will have all the topic ids list
 
+            ##because target exam is somehow an int but marking scemes has keys as string type
             if subject_id not in marking_scheme[target_exam]:
+                print "Here is the subject id %s"%subject_id
+                print marking_scheme[target_exam].keys()
                 # subject id not added in marking scheme config, indicates config errors
                 print 'subject id %s not added in marking scheme config, indicates config errors' % str(subject_id)
                 continue
 
+
+            ##this would work because taget_exam id is string which is alo type of marking scheme top level key types
+            ##, but then subject_id_map has integer keys, so subject_id being int by default will work here
             if question.type not in marking_scheme[target_exam][subject_id]:
+
+                # QUESTION_TYPE = {
+                #     '1': 'Single Correct',
+                #     '2': 'MultiCorrect',
+                #     '3': 'Single/Multi Correct',
+                #     '4': 'Comprehension',
+                #     '5': 'Matrix Match',
+                #     '6': 'Integer'
+                # }
                 # question type not added for subject in marking scheme config, indicates config errors
                 print 'question type %s not added for subject in marking scheme config, indicates config errors' % str(question.type)
                 continue
@@ -303,6 +348,7 @@ class AttemptedMockTestList(AuthorizedResource):
                     topic_wise[topic_id]['correct'].append(question.id)
                 if value['time'] < question.average_time + question_overtime:
                     subject_wise[subject_id]['perfect_attempts'].append(question_id)
+
                     if topic_id is not None:
                         topic_wise[topic_id]['perfect_attempts'].append(question_id)
                     perfect_attempts.append(question.id)
@@ -437,6 +483,9 @@ class AttemptedMockTestList(AuthorizedResource):
             'accuracy': overall_accuracy,
             'speed': overall_speed
         })
+
+        pprint.pprint(attempted_mock_test.answers)
+        pprint.pprint(attempted_mock_test.analysis)
 
         db.session.add(attempted_mock_test)
         db.session.commit()

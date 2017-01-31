@@ -38,8 +38,33 @@ class InstituteStudent(AuthorizedResource):
         parser.add_argument('profile', type=int, choices=[0,1], default=0)
         args = parser.parse_args()
         student = Student.get(kwargs['id'])
+
+        ## Get all the entries from student+batches tables where student_id is same as this student_id and get correponding
+        ##batch_id's list
         batch_ids = [sb.batch_id for sb in StudentBatches.query.filter(StudentBatches.student_id == student.id, StudentBatches.left_at == None).all()]
+        
+        ##Get all the bacthes in which this student is enrolled and also batches which belong to this institute
         batches = Batch.get_filtered(include_ids=batch_ids, institute_id=kwargs['user'].id)
+        
+        ##this will have name and id of all the batches to which this student has already been enrolled.
+
+        ## Now PushedMockTest is a table which have mock_test_id and batch_id, which implies that whichall mock test has 
+        ## been pushed to which batches.
+        ## So if a student was pushed to a batch, and then later a mock test has been pushed to that batch (entries in pushed_mock_test), 
+        ##then the status of this mock_test is not attempted for this student till he attempts it, Which will happend when student logs
+        ##into student panel, take the test and then submit it.
+
+        ##pushed_mock_test_ids is the list of all the mock_ids which belongs to all the batches to which the student has been enrolled.
+        ##  mock_tests: will have list of dict with keys as the mock_test ids and values as mock_test itself.
+
+        ## So if a new student is added  with batches, Then all the tests for all these batches will be unattempted for
+        ## this student
+
+        ## Get student batches from StudentBatches
+        ## Gte details of these batches from batch
+        ## Get all the mock_test ids for these batches
+        ##
+        ## Get Batches | Get bacthes on which student is enrolled > get all the mock tests for these filter bathes
         student.batches = [{'id': b.id, 'name': b.name} for b in batches]
         if args['profile'] == 1:
             pushed_mock_test_ids = {p.id: p.mock_test_id for p in PushedMockTest.query.filter(PushedMockTest.batch_id.in_([b.id for b in batches])).all()}
